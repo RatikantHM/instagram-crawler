@@ -1,13 +1,13 @@
 import puppeteer from 'puppeteer';
 import cheerio from 'cheerio';
 import jsdom from 'jsdom';
-import { writeFile } from 'fs/promises';
 
 const INSTAGRAM_LOGIN_PAGE = 'https://www.instagram.com/accounts/login';
 const INSTAGRAM_POST_URLS = ['https://www.instagram.com/motoroctane'];
 
-puppeteer.launch({ headless: false }).then(async (browser) => {
-    let page = await browser.newPage();
+puppeteer.launch({ headless: false, args: ['--start-maximized'] }).then(async (browser) => {
+    const page = await browser.newPage();
+    page.setViewport({ width: 1366, height: 768 });
     await page.goto(INSTAGRAM_LOGIN_PAGE, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('input[name="username"]');
     await page.type('input[name="username"]', '<username>');
@@ -21,9 +21,15 @@ puppeteer.launch({ headless: false }).then(async (browser) => {
             content.then(async (data) => {
                 const { JSDOM } = jsdom;
                 const dom = new JSDOM(data);
-                dom.window.document.querySelectorAll('div._aabd > a').forEach(function (d) {
-                    console.log(d.getAttribute('href'));
-                    
+                dom.window.document.querySelectorAll('div._aabd > a').forEach(async (d) => {
+                    const href = d.getAttribute('href');
+                    console.log(href);
+                    while(true) { // My account got suspended because of infinite scroll and frequent login // be careful!!
+                        await page.keyboard.press('ArrowDown');
+                        await page.waitForNetworkIdle();
+                    }
+                    // await page.waitForSelector('a[href="' + href + '"]');
+                    // await page.click('a[href="' + href + '"]');
                 });
 
                 // const $ = cheerio.load(data);
