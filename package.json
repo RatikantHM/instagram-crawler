@@ -10,12 +10,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "chrome-launcher": "^0.15.1",
     "chrome-remote-interface": "^0.32.0",
     "crawler": "^1.4.0",
     "jsdom": "^21.0.0",
     "node-fetch": "^3.3.0",
     "node-scrapy": "^0.5.0",
+    "puppeteer": "^19.5.2",
     "scraper": "^0.0.9"
   }
 }
